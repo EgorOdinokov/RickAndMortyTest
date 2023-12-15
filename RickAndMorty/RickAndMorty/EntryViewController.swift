@@ -18,7 +18,7 @@ class EntryViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             let vc = EpisodesViewController()
             vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true, completion: nil)
+            self.present(vc, animated: false)
         }
     }
     override func viewDidAppear(_ animated: Bool) {

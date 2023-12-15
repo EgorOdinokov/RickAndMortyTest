@@ -3,39 +3,36 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     let containerView = UIView()
-    let imageView = UILabel()
+    let imageView = UIImageView()
     let characterNameContainerView = UILabel()
     let characterNameTextView = UILabel()
     let videoNameContainerView = UILabel()
     let videoNameImageView = UIImageView()
     let videoNameTextView = UILabel()
     let isFavoriteView = UIImageView()
+    var data: Character?
+    var cellData: String = ""
+    var episode: Episode?
 
     weak var delegate: MyCollectionViewCellDelegate?
+    weak var delegate2: favoriteCellDelegate?
 
-    weak var favotitesDelegate: DataTransferDelegate?
-    var cellData: String = ""
-
-    @objc func favoriteViewTapped() {
+    @objc func didTapFavorite() {
+        guard let episode else { return }
         if self.isFavoriteView.image == UIImage(named: "Heart") {
             self.isFavoriteView.image = UIImage(named: "Filled_Heart")
+            delegate2?.appendCell(episode, false)
         } else {
             self.isFavoriteView.image = UIImage(named: "Heart")
+            delegate2?.appendCell(episode, true)
         }
-        favotitesDelegate?.transferData(cellData)
     }
 
 
     @objc
     func imageViewTapped() {
-        delegate?.didTapViewInCell(self)
+        delegate?.didTapViewInCell(self, data)
     }
-
-//    @objc
-//    func favoriteViewTapped() {
-//        delegate?.didTapFavoriteViewInCell(self)
-//    }
-
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,7 +60,6 @@ class CollectionViewCell: UICollectionViewCell {
 
     func setupSubviews() {
 
-        imageView.backgroundColor = .red
         videoNameContainerView.backgroundColor = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1)
         videoNameContainerView.layer.cornerRadius = 16
         videoNameImageView.image = UIImage(named: "MonitorPlay")
@@ -74,7 +70,7 @@ class CollectionViewCell: UICollectionViewCell {
         imageView.addGestureRecognizer(tapGesture)
 
         isFavoriteView.isUserInteractionEnabled = true
-        let tapGestureFavorite = UITapGestureRecognizer(target: self, action: #selector(favoriteViewTapped))
+        let tapGestureFavorite = UITapGestureRecognizer(target: self, action: #selector(didTapFavorite))
         isFavoriteView.addGestureRecognizer(tapGestureFavorite)
     }
 
@@ -133,6 +129,10 @@ class CollectionViewCell: UICollectionViewCell {
 }
 
 protocol MyCollectionViewCellDelegate: AnyObject {
-    func didTapViewInCell(_ cell: CollectionViewCell)
+    func didTapViewInCell(_ cell: CollectionViewCell, _ data: Character?)
+}
+
+protocol favoriteCellDelegate: AnyObject {
+    func appendCell(_ cellData: Episode, _ dismiss: Bool)
 }
 
